@@ -1,0 +1,54 @@
+﻿@page "/"
+@inject IDialogService _dialogService
+@using MudDialogSample.Dialog;
+
+<PageTitle>Index</PageTitle>
+
+<MudText Typo="Typo.h3" GutterBottom="true">Dialog테스트</MudText>
+
+<MudStack Row="true" Class="mb-5" Spacing="1">
+    <MudButton Variant="Variant.Outlined" Size="Size.Small"
+               @onclick="NewFolder">새 폴더</MudButton>
+
+    <MudButton Variant="Variant.Outlined" Size="Size.Small"
+               @onclick="NewFolderAsync">새 폴더 Async</MudButton>
+
+    <MudButton Variant="Variant.Outlined" Size="Size.Small" Color="Color.Info" StartIcon="@Icons.Material.Filled.CloudUpload"
+               @onclick="Upload">업로드</MudButton>
+</MudStack>
+
+<MudText>폴더명: @NewFolderName</MudText>
+
+@code {
+    private string NewFolderName = string.Empty;
+
+    private void NewFolder()
+    {
+        // 리턴값이 필요하다면 Show함수로는 받아올 수 없어요!
+        var dialog = _dialogService.Show<DlgNewFolder>("새 폴더 만들기",
+        new DialogOptions() { CloseOnEscapeKey = true });
+        //var result = dialog.Result.Result;
+    }
+
+    private async void NewFolderAsync()
+    {
+        var dialog = await _dialogService.ShowAsync<DlgNewFolder>("새 폴더 만들기",
+        new DialogOptions() { CloseOnEscapeKey = true });
+        var result = await dialog.Result;
+
+        if (result == null || result.Canceled) { return; }
+        if (result?.Data != null)
+        {
+            if (string.IsNullOrWhiteSpace(result.Data.ToString()))
+            {
+                return;
+            }
+            NewFolderName = result.Data.ToString();
+            StateHasChanged();
+        }
+    }
+
+    private async void Upload()
+    {
+    }
+}

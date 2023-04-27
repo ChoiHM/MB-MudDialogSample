@@ -1,0 +1,28 @@
+﻿<MudDialog DefaultFocus="DefaultFocus.FirstChild">
+    <DialogContent>
+        <MudForm ReadOnly="false">
+            <MudTextField T="string" Label="폴더명" @bind-Value="FolderName" Immediate="true" OnKeyDown="keydown"></MudTextField>
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Color="Color.Primary" OnClick="Submit" ButtonType="ButtonType.Submit">생성</MudButton>
+        <MudButton OnClick="Cancel">취소</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    [Parameter]
+    public string FolderName { get; set; }
+
+    void Submit() => MudDialog.Close(DialogResult.Ok(FolderName));
+    void Cancel() => MudDialog.Cancel();
+
+    private void keydown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            MudDialog.Close(DialogResult.Ok(FolderName));
+        }
+    }
+}
